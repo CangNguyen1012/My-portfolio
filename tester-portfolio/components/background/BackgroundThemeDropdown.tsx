@@ -2,6 +2,8 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+type DropdownPosition = { top: number; left: number };
+import { createPortal } from "react-dom";
 
 type BackgroundTheme = "galaxy" | "beach" | "coffee" | "mountain";
 
@@ -23,7 +25,10 @@ export default function BackgroundThemeDropdown({
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  const activeLabel = THEMES.find((t) => t.value === theme)?.label ?? "Background";
+  const [dropdownPos, setDropdownPos] = useState<DropdownPosition | null>(null);
+
+  const activeLabel =
+    THEMES.find((t) => t.value === theme)?.label ?? "Background";
 
   useEffect(() => {
     function onDocMouseDown(e: MouseEvent) {
@@ -32,10 +37,20 @@ export default function BackgroundThemeDropdown({
       if (e.target instanceof Node && el.contains(e.target)) return;
       setOpen(false);
     }
-
     document.addEventListener("mousedown", onDocMouseDown);
     return () => document.removeEventListener("mousedown", onDocMouseDown);
   }, []);
+
+  // Calculate dropdown position when open
+  useEffect(() => {
+    if (open && rootRef.current) {
+      const rect = rootRef.current.getBoundingClientRect();
+      setDropdownPos({
+        top: rect.bottom + window.scrollY,
+        left: rect.right - 224, // 224px = w-56
+      });
+    }
+  }, [open]);
 
   return (
     <div ref={rootRef} className="relative">
@@ -63,46 +78,60 @@ export default function BackgroundThemeDropdown({
         </span>
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            role="listbox"
-            aria-label="Background theme"
-            initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -6 }}
-            animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
-            exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -6 }}
-            transition={reduceMotion ? { duration: 0 } : { duration: 0.18, ease: "easeOut" }}
-            className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-2xl bg-white/75 shadow-[0_20px_60px_rgba(0,0,0,0.35)] ring-1 ring-black/10 backdrop-blur dark:bg-black/40 dark:ring-white/10"
-          >
-            <div className="p-1">
-              {THEMES.map((t) => {
-                const selected = t.value === theme;
-                return (
-                  <button
-                    key={t.value}
-                    type="button"
-                    role="option"
-                    aria-selected={selected}
-                    onClick={() => {
-                      onChange(t.value);
-                      setOpen(false);
-                    }}
-                    className={[
-                      "w-full cursor-pointer rounded-xl px-3 py-2 text-left text-sm transition-colors focus:outline-none",
-                      selected
-                        ? "bg-cyan-400/20 text-cyan-900 dark:bg-cyan-400/15 dark:text-cyan-100 ring-1 ring-cyan-300/50"
-                        : "text-slate-900/80 hover:bg-cyan-400/15 hover:text-cyan-100 dark:text-slate-100/80 dark:hover:bg-cyan-400/15",
-                    ].join(" ")}
-                  >
-                    {t.label}
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
+      {typeof window !== "undefined" &&
+        open &&
+        dropdownPos &&
+        createPortal(
+          <AnimatePresence>
+            <motion.div
+              role="listbox"
+              aria-label="Background theme"
+              initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -6 }}
+              animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+              exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -6 }}
+              transition={
+                reduceMotion
+                  ? { duration: 0 }
+                  : { duration: 0.18, ease: "easeOut" }
+              }
+              style={{
+                position: "absolute",
+                top: dropdownPos.top,
+                left: dropdownPos.left,
+                zIndex: 100,
+                minWidth: 224,
+              }}
+              className="w-56 overflow-hidden rounded-2xl bg-white/75 shadow-lg ring-1 ring-black/10 backdrop-blur dark:bg-black/40 dark:ring-white/10"
+            >
+              <div className="p-1">
+                {THEMES.map((t) => {
+                  const selected = t.value === theme;
+                  return (
+                    <button
+                      key={t.value}
+                      type="button"
+                      role="option"
+                      aria-selected={selected}
+                      onClick={() => {
+                        onChange(t.value);
+                        setOpen(false);
+                      }}
+                      className={[
+                        "w-full cursor-pointer rounded-xl px-3 py-2 text-left text-sm transition-colors focus:outline-none",
+                        selected
+                          ? "bg-cyan-400/20 text-cyan-900 dark:bg-cyan-400/15 dark:text-cyan-100 ring-1 ring-cyan-300/50"
+                          : "text-slate-900/80 hover:bg-cyan-400/15 hover:text-cyan-100 dark:text-slate-100/80 dark:hover:bg-cyan-400/15",
+                      ].join(" ")}
+                    >
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </div>
   );
 }
-

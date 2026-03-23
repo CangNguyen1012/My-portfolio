@@ -19,7 +19,9 @@ export default function LandscapeBackground({
   useEffect(() => {
     if (reduceMotionFromHook === null) return;
     // Defer state update to avoid "setState in effect" lint rule and cascading renders.
-    const id = window.requestAnimationFrame(() => setReducedMotion(reduceMotionFromHook));
+    const id = window.requestAnimationFrame(() =>
+      setReducedMotion(reduceMotionFromHook),
+    );
     return () => window.cancelAnimationFrame(id);
   }, [reduceMotionFromHook]);
 
@@ -32,9 +34,7 @@ export default function LandscapeBackground({
         opacity: [0.85, 1, 0.85],
       };
 
-  const fadeIn = reducedMotion
-    ? { opacity: 1 }
-    : { opacity: [0, 1] };
+  const fadeIn = reducedMotion ? { opacity: 1 } : { opacity: [0, 1] };
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -55,7 +55,7 @@ export default function LandscapeBackground({
         <>
           {/* Sun glow */}
           <motion.div
-            className="absolute -top-10 left-[12%] h-[300px] w-[300px] rounded-full bg-cyan-300/20 blur-3xl"
+            className="absolute -top-10 left-[12%] h-75 w-75 rounded-full bg-cyan-300/20 blur-3xl"
             style={{
               background:
                 "radial-gradient(circle, rgba(34,211,238,0.35), transparent 60%)",
@@ -70,7 +70,7 @@ export default function LandscapeBackground({
 
           {/* Subtle clouds */}
           <motion.div
-            className="absolute top-[18%] left-[-10%] h-[220px] w-[520px] blur-2xl"
+            className="absolute top-[18%] left-[-10%] h-55 w-130 blur-2xl"
             style={{
               background:
                 "radial-gradient(circle at 30% 40%, rgba(255,255,255,0.10), transparent 60%), radial-gradient(circle at 70% 50%, rgba(255,255,255,0.08), transparent 60%)",
@@ -130,7 +130,7 @@ export default function LandscapeBackground({
 
           {/* Window light */}
           <motion.div
-            className="absolute top-[18%] left-[10%] h-[220px] w-[360px] rounded-3xl blur-2xl"
+            className="absolute top-[18%] left-[10%] h-55 w-90 rounded-3xl blur-2xl"
             style={{
               background:
                 "radial-gradient(circle at 30% 30%, rgba(251,191,36,0.35), transparent 58%), radial-gradient(circle at 70% 60%, rgba(245,158,11,0.25), transparent 62%)",
@@ -145,7 +145,7 @@ export default function LandscapeBackground({
 
           {/* Table glow */}
           <motion.div
-            className="absolute bottom-[10%] left-[18%] h-[220px] w-[360px] rounded-full blur-3xl"
+            className="absolute bottom-[10%] left-[18%] h-55 w-90 rounded-full blur-3xl"
             style={{
               background:
                 "radial-gradient(circle, rgba(251,191,36,0.22), transparent 65%)",
@@ -185,7 +185,7 @@ export default function LandscapeBackground({
 
           {/* Aurora-ish nebula */}
           <motion.div
-            className="absolute -top-20 left-[-10%] h-[420px] w-[620px] blur-3xl"
+            className="absolute -top-20 left-[-10%] h-105 w-155 blur-3xl"
             style={{
               background:
                 "radial-gradient(circle at 40% 40%, rgba(34,211,238,0.18), transparent 60%), radial-gradient(circle at 70% 55%, rgba(139,92,246,0.18), transparent 55%)",
@@ -200,7 +200,9 @@ export default function LandscapeBackground({
 
           {/* Mountain silhouettes */}
           <div className="absolute bottom-0 left-0 right-0 h-[52%]">
-            <div style={mountainLayer({ tint: "rgba(2,6,23,0.95)", y: "0%" })} />
+            <div
+              style={mountainLayer({ tint: "rgba(2,6,23,0.95)", y: "0%" })}
+            />
             <div
               style={mountainLayer({
                 tint: "rgba(5,11,33,0.92)",
@@ -225,7 +227,9 @@ export default function LandscapeBackground({
                 "radial-gradient(circle at 50% 0%, rgba(56,189,248,0.20), transparent 60%)",
             }}
             animate={
-              reducedMotion ? { opacity: 0.55 } : { opacity: [0.35, 0.55, 0.35] }
+              reducedMotion
+                ? { opacity: 0.55 }
+                : { opacity: [0.35, 0.55, 0.35] }
             }
             transition={
               reducedMotion
@@ -249,7 +253,7 @@ function SteamLine({
   // Thin “steam” ribbon made with a blurred gradient.
   return (
     <motion.div
-      className="absolute left-[50%] top-[46%] h-[170px] w-[10px] blur-[1px]"
+      className="absolute left-[50%] top-[46%] h-42.5 w-2.5 blur-[1px]"
       style={{
         background:
           "linear-gradient(to top, rgba(236,72,153,0.0), rgba(236,72,153,0.10), rgba(251,191,36,0.22), rgba(255,255,255,0.0))",
@@ -319,4 +323,3 @@ function mountainLayer({ tint, y }: { tint: string; y: string }) {
       "polygon(0% 100%, 0% 60%, 10% 55%, 20% 62%, 30% 45%, 42% 58%, 55% 40%, 67% 55%, 78% 42%, 88% 52%, 100% 46%, 100% 100%)",
   } satisfies CSSProperties;
 }
-

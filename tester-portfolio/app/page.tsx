@@ -42,44 +42,36 @@ export default function Home() {
 
       <PortfolioHeader theme={theme} onThemeChange={setTheme} />
 
-      <main className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-24 pt-10">
-        <section
-          id="about"
-          className="scroll-mt-28 rounded-2xl bg-white/60 dark:bg-black/30 ring-1 ring-black/5 dark:ring-white/10 p-6 backdrop-blur"
-        >
-          <h2 className="text-lg font-semibold text-slate-900/85 dark:text-slate-100/90">
-            About
-          </h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-700/90 dark:text-slate-300/80">
-            I’m a tester focused on clear bug reports, steady regression
-            coverage, and automation where it actually helps. (Replace this
-            text.)
-          </p>
-        </section>
-
-        <section
-          id="projects"
-          className="scroll-mt-28 mt-5 rounded-2xl bg-white/60 dark:bg-black/30 ring-1 ring-black/5 dark:ring-white/10 p-6 backdrop-blur"
-        >
-          <h2 className="text-lg font-semibold text-slate-900/85 dark:text-slate-100/90">
-            Projects
-          </h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-700/90 dark:text-slate-300/80">
-            Add your case studies, test automation highlights, and tooling
-            here. (Replace this text.)
-          </p>
-        </section>
-
-        <section
-          id="contract"
-          className="scroll-mt-28 mt-5 rounded-2xl bg-white/60 dark:bg-black/30 ring-1 ring-black/5 dark:ring-white/10 p-6 backdrop-blur"
-        >
-          <h2 className="text-lg font-semibold text-slate-900/85 dark:text-slate-100/90">
-            Contract
-          </h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-700/90 dark:text-slate-300/80">
-            Contact details and availability go here. (Replace this text.)
-          </p>
+      <main className="relative z-10 flex flex-col items-center justify-center min-h-[70vh] mx-auto w-full max-w-5xl px-4">
+        {/* Hero Section */}
+        <section className="w-full">
+          <motion.div
+            initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={reduceMotion ? { duration: 0 } : { duration: 0.6 }}
+            className="text-center"
+          >
+            <h1 className="text-4xl sm:text-5xl font-bold text-slate-900/90 dark:text-slate-100 mb-4">
+              {`Let's build better software together`}
+            </h1>
+            <p className="text-lg text-slate-700/85 dark:text-slate-300/85 max-w-2xl mx-auto mb-6">
+              {`I bring a methodical approach to testing—finding what breaks, how it breaks, and why it matters. Whether it's test automation, quality strategy, or meticulous bug documentation, I'm here to ensure your product works.`}
+            </p>
+            <div className="flex gap-3 justify-center flex-wrap">
+              <a
+                href="/contact"
+                className="rounded-xl bg-cyan-500/80 hover:bg-cyan-500 px-6 py-3 text-sm font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300/60"
+              >
+                Get in Touch
+              </a>
+              <a
+                href="/projects"
+                className="rounded-xl bg-white/50 dark:bg-black/40 hover:bg-white/60 dark:hover:bg-black/50 px-6 py-3 text-sm font-medium text-slate-900/85 dark:text-slate-100/85 ring-1 ring-black/5 dark:ring-white/10 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-300/60"
+              >
+                See My Work
+              </a>
+            </div>
+          </motion.div>
         </section>
       </main>
     </div>

@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 
 import BackgroundThemeDropdown from "@/components/background/BackgroundThemeDropdown";
 
 type BackgroundTheme = "galaxy" | "beach" | "coffee" | "mountain";
 
 const NAV_ITEMS: Array<{ label: string; href: string }> = [
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Contract", href: "#contract" },
+  { label: "Home", href: "/" },
+  { label: "Profile", href: "/about" },
+  { label: "Projects", href: "/projects" },
+  { label: "Contact", href: "/contact" },
 ];
-
-const LANGUAGES: string[] = ["TS", "JS", "Python", "SQL"];
 
 export default function PortfolioHeader({
   theme,
@@ -27,7 +27,7 @@ export default function PortfolioHeader({
   useEffect(() => {
     const stored = window.localStorage.getItem("theme");
     const prefersDark = window.matchMedia?.(
-      "(prefers-color-scheme: dark)"
+      "(prefers-color-scheme: dark)",
     ).matches;
     const nextDark = stored ? stored === "dark" : Boolean(prefersDark);
 
@@ -86,17 +86,53 @@ export default function PortfolioHeader({
       <div className="backdrop-blur bg-white/60 dark:bg-black/40 ring-1 ring-black/5 dark:ring-white/10 rounded-2xl mx-auto mt-6 max-w-5xl px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         {/* Left: avatar + name */}
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-400/30 via-violet-400/25 to-amber-300/20 ring-1 ring-black/10 dark:ring-white/10 flex items-center justify-center">
-            <span className="text-sm font-semibold text-slate-900/80 dark:text-slate-100/90">
-              TN
-            </span>
+          <div className="h-10 w-10 rounded-full bg-linear-to-br from-cyan-400/30 via-violet-400/25 to-amber-300/20 ring-1 ring-black/10 dark:ring-white/10 flex items-center justify-center overflow-hidden">
+            <input
+              type="file"
+              accept="image/*"
+              id="avatar-upload"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (ev) => {
+                    const img = document.getElementById(
+                      "avatar-img",
+                    ) as HTMLImageElement;
+                    if (img && ev.target?.result) {
+                      img.src = ev.target.result as string;
+                      img.style.display = "block";
+                      const placeholder =
+                        document.getElementById("avatar-placeholder");
+                      if (placeholder) placeholder.style.display = "none";
+                    }
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+            <label
+              htmlFor="avatar-upload"
+              className="w-full h-full flex items-center justify-center cursor-pointer"
+            >
+              <Image
+                id="avatar-img"
+                src="/dfwho2q-3ec94afc-1707-4277-9040-e9ca711de110.jpg"
+                alt="Avatar"
+                className="object-cover w-full h-full rounded-full"
+                width={40}
+                height={40}
+                unoptimized
+              />
+            </label>
           </div>
           <div className="leading-tight">
             <div className="text-sm font-semibold text-slate-900/85 dark:text-slate-100/90">
-              Tester Name
+              Nguyễn Bá Cang
             </div>
             <div className="text-xs text-slate-600/90 dark:text-slate-300/80">
-              QA / Tester • Chill + thorough
+              QA / Tester
             </div>
           </div>
         </div>
@@ -116,16 +152,7 @@ export default function PortfolioHeader({
 
         {/* Right: languages, dark mode, background selection */}
         <div className="flex items-center gap-2">
-          <div className="hidden lg:flex items-center gap-2">
-            {LANGUAGES.map((l) => (
-              <span
-                key={l}
-                className="rounded-xl bg-white/40 dark:bg-black/30 px-3 py-2 text-xs font-medium text-slate-900/75 dark:text-slate-100/75 ring-1 ring-black/5 dark:ring-white/10"
-              >
-                {l}
-              </span>
-            ))}
-          </div>
+          <div className="hidden lg:flex items-center gap-2"></div>
 
           <button
             type="button"
@@ -150,4 +177,3 @@ export default function PortfolioHeader({
     </header>
   );
 }
-
