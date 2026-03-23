@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 
 import GalaxyBackground from "@/components/background/GalaxyBackground";
 import LandscapeBackground from "@/components/background/LandscapeBackground";
-import BackgroundThemeDropdown from "@/components/background/BackgroundThemeDropdown";
+import PortfolioHeader from "@/components/PortfolioHeader";
 
 type BackgroundTheme = "galaxy" | "beach" | "coffee" | "mountain";
 
@@ -21,7 +21,7 @@ export default function Home() {
   }, [theme]);
 
   return (
-    <div className="relative flex flex-col flex-1 items-center justify-center font-sans">
+    <div className="relative min-h-screen w-full font-sans">
       {/* Background layer (animated when switching themes) */}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
@@ -40,15 +40,47 @@ export default function Home() {
         </motion.div>
       </AnimatePresence>
 
-      <main className="relative z-10 flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white/70 backdrop-blur dark:bg-black/50">
-        <div className="w-full flex items-center justify-end mb-10">
-          <label className="mr-3 text-xs font-medium text-slate-900/70 dark:text-slate-100/70">
-            Background
-          </label>
-          <BackgroundThemeDropdown theme={theme} onChange={setTheme} />
-        </div>
+      <PortfolioHeader theme={theme} onThemeChange={setTheme} />
 
-        {/* keep your existing content below */}
+      <main className="relative z-10 mx-auto w-full max-w-5xl px-4 pb-24 pt-10">
+        <section
+          id="about"
+          className="scroll-mt-28 rounded-2xl bg-white/60 dark:bg-black/30 ring-1 ring-black/5 dark:ring-white/10 p-6 backdrop-blur"
+        >
+          <h2 className="text-lg font-semibold text-slate-900/85 dark:text-slate-100/90">
+            About
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-slate-700/90 dark:text-slate-300/80">
+            I’m a tester focused on clear bug reports, steady regression
+            coverage, and automation where it actually helps. (Replace this
+            text.)
+          </p>
+        </section>
+
+        <section
+          id="projects"
+          className="scroll-mt-28 mt-5 rounded-2xl bg-white/60 dark:bg-black/30 ring-1 ring-black/5 dark:ring-white/10 p-6 backdrop-blur"
+        >
+          <h2 className="text-lg font-semibold text-slate-900/85 dark:text-slate-100/90">
+            Projects
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-slate-700/90 dark:text-slate-300/80">
+            Add your case studies, test automation highlights, and tooling
+            here. (Replace this text.)
+          </p>
+        </section>
+
+        <section
+          id="contract"
+          className="scroll-mt-28 mt-5 rounded-2xl bg-white/60 dark:bg-black/30 ring-1 ring-black/5 dark:ring-white/10 p-6 backdrop-blur"
+        >
+          <h2 className="text-lg font-semibold text-slate-900/85 dark:text-slate-100/90">
+            Contract
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-slate-700/90 dark:text-slate-300/80">
+            Contact details and availability go here. (Replace this text.)
+          </p>
+        </section>
       </main>
     </div>
   );

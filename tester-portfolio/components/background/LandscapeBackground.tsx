@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import type { CSSProperties } from "react";
+import { useEffect, useState } from "react";
 
 export type LandscapeScene = "beach" | "coffee" | "mountain";
 
@@ -10,10 +11,20 @@ export default function LandscapeBackground({
 }: {
   variant?: LandscapeScene;
 }) {
-  const reduceMotion = useReducedMotion();
+  // `useReducedMotion()` can be `null` / differ between server and first client render.
+  // We normalize it so the initial HTML matches (prevents hydration mismatch).
+  const reduceMotionFromHook = useReducedMotion();
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    if (reduceMotionFromHook === null) return;
+    // Defer state update to avoid "setState in effect" lint rule and cascading renders.
+    const id = window.requestAnimationFrame(() => setReducedMotion(reduceMotionFromHook));
+    return () => window.cancelAnimationFrame(id);
+  }, [reduceMotionFromHook]);
 
   // Reduced-motion: keep everything static.
-  const float = reduceMotion
+  const float = reducedMotion
     ? { x: 0, y: 0, opacity: 1 }
     : {
         x: [0, 10, 0],
@@ -21,7 +32,7 @@ export default function LandscapeBackground({
         opacity: [0.85, 1, 0.85],
       };
 
-  const fadeIn = reduceMotion
+  const fadeIn = reducedMotion
     ? { opacity: 1 }
     : { opacity: [0, 1] };
 
@@ -51,7 +62,7 @@ export default function LandscapeBackground({
             }}
             animate={float}
             transition={
-              reduceMotion
+              reducedMotion
                 ? { duration: 0 }
                 : { duration: 10, repeat: Infinity, ease: "easeInOut" }
             }
@@ -64,9 +75,9 @@ export default function LandscapeBackground({
               background:
                 "radial-gradient(circle at 30% 40%, rgba(255,255,255,0.10), transparent 60%), radial-gradient(circle at 70% 50%, rgba(255,255,255,0.08), transparent 60%)",
             }}
-            animate={reduceMotion ? { x: 0 } : { x: [0, 30, 0] }}
+            animate={reducedMotion ? { x: 0 } : { x: [0, 30, 0] }}
             transition={
-              reduceMotion
+              reducedMotion
                 ? { duration: 0 }
                 : { duration: 16, repeat: Infinity, ease: "easeInOut" }
             }
@@ -81,9 +92,9 @@ export default function LandscapeBackground({
               maskImage:
                 "linear-gradient(to bottom, rgba(0,0,0,0.8), transparent 92%)",
             }}
-            animate={reduceMotion ? { x: 0 } : { x: [0, -80] }}
+            animate={reducedMotion ? { x: 0 } : { x: [0, -80] }}
             transition={
-              reduceMotion
+              reducedMotion
                 ? { duration: 0 }
                 : { duration: 12, repeat: Infinity, ease: "linear" }
             }
@@ -126,7 +137,7 @@ export default function LandscapeBackground({
             }}
             animate={float}
             transition={
-              reduceMotion
+              reducedMotion
                 ? { duration: 0 }
                 : { duration: 12, repeat: Infinity, ease: "easeInOut" }
             }
@@ -140,10 +151,10 @@ export default function LandscapeBackground({
                 "radial-gradient(circle, rgba(251,191,36,0.22), transparent 65%)",
             }}
             animate={
-              reduceMotion ? { opacity: 1 } : { opacity: [0.75, 1, 0.75] }
+              reducedMotion ? { opacity: 1 } : { opacity: [0.75, 1, 0.75] }
             }
             transition={
-              reduceMotion
+              reducedMotion
                 ? { duration: 0 }
                 : { duration: 6, repeat: Infinity, ease: "easeInOut" }
             }
@@ -151,9 +162,9 @@ export default function LandscapeBackground({
 
           {/* Steam */}
           <div className="absolute inset-0">
-            <SteamLine delay={0} reduceMotion={reduceMotion ?? false} />
-            <SteamLine delay={0.8} reduceMotion={reduceMotion ?? false} />
-            <SteamLine delay={1.6} reduceMotion={reduceMotion ?? false} />
+            <SteamLine delay={0} reduceMotion={reducedMotion} />
+            <SteamLine delay={0.8} reduceMotion={reducedMotion} />
+            <SteamLine delay={1.6} reduceMotion={reducedMotion} />
           </div>
 
           {/* Subtle floating dust */}
@@ -161,7 +172,7 @@ export default function LandscapeBackground({
             className="absolute inset-0 opacity-20"
             style={starsStyle(0.9)}
             animate={fadeIn}
-            transition={reduceMotion ? { duration: 0 } : { duration: 1.0 }}
+            transition={reducedMotion ? { duration: 0 } : { duration: 1.0 }}
           />
         </>
       )}
@@ -179,9 +190,9 @@ export default function LandscapeBackground({
               background:
                 "radial-gradient(circle at 40% 40%, rgba(34,211,238,0.18), transparent 60%), radial-gradient(circle at 70% 55%, rgba(139,92,246,0.18), transparent 55%)",
             }}
-            animate={reduceMotion ? { y: 0 } : { y: [0, 18, 0] }}
+            animate={reducedMotion ? { y: 0 } : { y: [0, 18, 0] }}
             transition={
-              reduceMotion
+              reducedMotion
                 ? { duration: 0 }
                 : { duration: 18, repeat: Infinity, ease: "easeInOut" }
             }
@@ -214,10 +225,10 @@ export default function LandscapeBackground({
                 "radial-gradient(circle at 50% 0%, rgba(56,189,248,0.20), transparent 60%)",
             }}
             animate={
-              reduceMotion ? { opacity: 0.55 } : { opacity: [0.35, 0.55, 0.35] }
+              reducedMotion ? { opacity: 0.55 } : { opacity: [0.35, 0.55, 0.35] }
             }
             transition={
-              reduceMotion
+              reducedMotion
                 ? { duration: 0 }
                 : { duration: 7, repeat: Infinity, ease: "easeInOut" }
             }

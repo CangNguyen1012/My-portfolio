@@ -1,12 +1,23 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export default function GalaxyBackground() {
-  const reduceMotion = useReducedMotion();
+  // Hydration-safe reduced-motion handling.
+  const reduceMotionFromHook = useReducedMotion();
+  const [reducedMotion, setReducedMotion] = useState(false);
 
-  const orb1 = reduceMotion ? { x: 0, y: 0 } : { x: [0, 18, 0], y: [0, 26, 0] };
-  const orb2 = reduceMotion
+  useEffect(() => {
+    if (reduceMotionFromHook === null) return;
+    const id = window.requestAnimationFrame(() =>
+      setReducedMotion(reduceMotionFromHook)
+    );
+    return () => window.cancelAnimationFrame(id);
+  }, [reduceMotionFromHook]);
+
+  const orb1 = reducedMotion ? { x: 0, y: 0 } : { x: [0, 18, 0], y: [0, 26, 0] };
+  const orb2 = reducedMotion
     ? { x: 0, y: 0 }
     : { x: [0, -22, 0], y: [0, -18, 0] };
 
@@ -17,7 +28,7 @@ export default function GalaxyBackground() {
         className="absolute -top-40 left-10 h-[520px] w-[520px] rounded-full bg-cyan-400/20 blur-3xl"
         animate={orb1}
         transition={
-          reduceMotion
+          reducedMotion
             ? { duration: 0 }
             : { duration: 12, repeat: Infinity, ease: "easeInOut" }
         }
@@ -26,7 +37,7 @@ export default function GalaxyBackground() {
         className="absolute bottom-0 right-0 h-[620px] w-[620px] rounded-full bg-violet-500/15 blur-3xl"
         animate={orb2}
         transition={
-          reduceMotion
+          reducedMotion
             ? { duration: 0 }
             : { duration: 14, repeat: Infinity, ease: "easeInOut" }
         }
