@@ -1,11 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-
-import BackgroundThemeDropdown from "@/components/background/BackgroundThemeDropdown";
-
-type BackgroundTheme = "galaxy" | "beach" | "coffee" | "mountain";
 
 const NAV_ITEMS: Array<{ label: string; href: string }> = [
   { label: "Home", href: "/" },
@@ -14,17 +10,14 @@ const NAV_ITEMS: Array<{ label: string; href: string }> = [
   { label: "Contact", href: "/contact" },
 ];
 
-export default function PortfolioHeader({
-  theme,
-  onThemeChange,
-}: {
-  theme: BackgroundTheme;
-  onThemeChange: (t: BackgroundTheme) => void;
-}) {
+export default function PortfolioHeader() {
   const [mounted, setMounted] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [openToWork, setOpenToWork] = useState(true);
 
   useEffect(() => {
+    const storedAvail = window.localStorage.getItem("openToWork");
+
     const stored = window.localStorage.getItem("theme");
     const prefersDark = window.matchMedia?.(
       "(prefers-color-scheme: dark)",
@@ -32,6 +25,7 @@ export default function PortfolioHeader({
     const nextDark = stored ? stored === "dark" : Boolean(prefersDark);
 
     const id = window.requestAnimationFrame(() => {
+      if (storedAvail !== null) setOpenToWork(storedAvail === "true");
       setIsDark(nextDark);
       setMounted(true);
 
@@ -49,6 +43,12 @@ export default function PortfolioHeader({
 
     document.documentElement.dataset.theme = nextDark ? "dark" : "light";
     document.documentElement.classList.toggle("dark", nextDark);
+  };
+
+  const toggleAvailability = () => {
+    const next = !openToWork;
+    setOpenToWork(next);
+    window.localStorage.setItem("openToWork", String(next));
   };
 
   const themeIcon = useMemo(() => {
@@ -83,62 +83,48 @@ export default function PortfolioHeader({
 
   return (
     <header className="relative z-10 w-full">
-      <div className="backdrop-blur bg-white/60 dark:bg-black/40 ring-1 ring-black/5 dark:ring-white/10 rounded-2xl mx-auto mt-6 max-w-5xl px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div className="backdrop-blur bg-white/60 dark:bg-black/40 ring-1 ring-black/5 dark:ring-white/10 rounded-2xl mx-auto mt-6 max-w-7xl px-6 py-3 relative flex flex-wrap items-center justify-between gap-3">
         {/* Left: avatar + name */}
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-linear-to-br from-cyan-400/30 via-violet-400/25 to-amber-300/20 ring-1 ring-black/10 dark:ring-white/10 flex items-center justify-center overflow-hidden">
-            <input
-              type="file"
-              accept="image/*"
-              id="avatar-upload"
-              style={{ display: "none" }}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  const reader = new FileReader();
-                  reader.onload = (ev) => {
-                    const img = document.getElementById(
-                      "avatar-img",
-                    ) as HTMLImageElement;
-                    if (img && ev.target?.result) {
-                      img.src = ev.target.result as string;
-                      img.style.display = "block";
-                      const placeholder =
-                        document.getElementById("avatar-placeholder");
-                      if (placeholder) placeholder.style.display = "none";
-                    }
-                  };
-                  reader.readAsDataURL(file);
-                }
-              }}
+        <div className="flex items-center gap-3 z-10">
+          <div className="h-10 w-10 rounded-full bg-linear-to-br from-cyan-500/30 via-cyan-700/25 to-cyan-900/20 ring-1 ring-black/10 dark:ring-white/10 flex items-center justify-center overflow-hidden">
+            <Image
+              src="/dfwho2q-3ec94afc-1707-4277-9040-e9ca711de110.jpg"
+              alt="Avatar"
+              className="object-cover w-full h-full rounded-full"
+              width={40}
+              height={40}
+              unoptimized
             />
-            <label
-              htmlFor="avatar-upload"
-              className="w-full h-full flex items-center justify-center cursor-pointer"
-            >
-              <Image
-                id="avatar-img"
-                src="/dfwho2q-3ec94afc-1707-4277-9040-e9ca711de110.jpg"
-                alt="Avatar"
-                className="object-cover w-full h-full rounded-full"
-                width={40}
-                height={40}
-                unoptimized
-              />
-            </label>
           </div>
           <div className="leading-tight">
-            <div className="text-sm font-semibold text-slate-900/85 dark:text-slate-100/90">
-              Nguyễn Bá Cang
+            <div className="text-sm font-semibold text-slate-900/85 dark:text-slate-100/90 flex items-center gap-2">
+              Nguyen Ba Cang (Henry)
+              <button
+                type="button"
+                onClick={toggleAvailability}
+                aria-label="Toggle availability status"
+                className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold transition-colors ${
+                  openToWork
+                    ? "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-500/30"
+                    : "bg-slate-500/10 text-slate-500 dark:text-slate-400 ring-1 ring-slate-400/20"
+                }`}
+              >
+                <span
+                  className={`inline-block h-1.5 w-1.5 rounded-full ${
+                    openToWork ? "bg-cyan-500 animate-pulse" : "bg-slate-400"
+                  }`}
+                />
+                {openToWork ? "Open to Work" : "Not Available"}
+              </button>
             </div>
             <div className="text-xs text-slate-600/90 dark:text-slate-300/80">
-              QA / Tester
+              Software Tester
             </div>
           </div>
         </div>
 
         {/* Center: tabs */}
-        <nav className="flex items-center gap-2">
+        <nav className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
           {NAV_ITEMS.map((item) => (
             <a
               key={item.href}
@@ -151,7 +137,7 @@ export default function PortfolioHeader({
         </nav>
 
         {/* Right: languages, dark mode, background selection */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 z-10">
           <div className="hidden lg:flex items-center gap-2"></div>
 
           <button
@@ -165,13 +151,6 @@ export default function PortfolioHeader({
             </span>
             {themeIcon}
           </button>
-
-          <div className="hidden xl:block">
-            <BackgroundThemeDropdown theme={theme} onChange={onThemeChange} />
-          </div>
-          <div className="xl:hidden">
-            <BackgroundThemeDropdown theme={theme} onChange={onThemeChange} />
-          </div>
         </div>
       </div>
     </header>

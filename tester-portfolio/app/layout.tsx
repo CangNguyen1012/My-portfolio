@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tester Name - QA & Testing Portfolio",
+  title: "Nguyen Ba Cang - Software Tester",
   description:
-    "QA Engineer & Tester | Chill + thorough | Test automation, bug reporting, and quality assurance",
+    "Software Tester | Chill | Manual & Automation Testing | Quality Assurance | Bug Hunter | Tech Enthusiast | Let's build better software together.",
 };
 
 export default function RootLayout({

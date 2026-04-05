@@ -188,7 +188,7 @@ export default function LandscapeBackground({
             className="absolute -top-20 left-[-10%] h-105 w-155 blur-3xl"
             style={{
               background:
-                "radial-gradient(circle at 40% 40%, rgba(34,211,238,0.18), transparent 60%), radial-gradient(circle at 70% 55%, rgba(139,92,246,0.18), transparent 55%)",
+                "radial-gradient(circle at 40% 40%, rgba(8,145,178,0.18), transparent 60%), radial-gradient(circle at 70% 55%, rgba(59,93,138,0.18), transparent 55%)",
             }}
             animate={reducedMotion ? { y: 0 } : { y: [0, 18, 0] }}
             transition={

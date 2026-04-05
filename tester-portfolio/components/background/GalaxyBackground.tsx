@@ -11,12 +11,14 @@ export default function GalaxyBackground() {
   useEffect(() => {
     if (reduceMotionFromHook === null) return;
     const id = window.requestAnimationFrame(() =>
-      setReducedMotion(reduceMotionFromHook)
+      setReducedMotion(reduceMotionFromHook),
     );
     return () => window.cancelAnimationFrame(id);
   }, [reduceMotionFromHook]);
 
-  const orb1 = reducedMotion ? { x: 0, y: 0 } : { x: [0, 18, 0], y: [0, 26, 0] };
+  const orb1 = reducedMotion
+    ? { x: 0, y: 0 }
+    : { x: [0, 18, 0], y: [0, 26, 0] };
   const orb2 = reducedMotion
     ? { x: 0, y: 0 }
     : { x: [0, -22, 0], y: [0, -18, 0] };
@@ -25,7 +27,7 @@ export default function GalaxyBackground() {
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {/* Orbs (chill glow) */}
       <motion.div
-        className="absolute -top-40 left-10 h-[520px] w-[520px] rounded-full bg-cyan-400/20 blur-3xl"
+        className="absolute -top-40 left-10 h-130 w-130 rounded-full bg-cyan-600/20 blur-3xl"
         animate={orb1}
         transition={
           reducedMotion
@@ -34,7 +36,7 @@ export default function GalaxyBackground() {
         }
       />
       <motion.div
-        className="absolute bottom-0 right-0 h-[620px] w-[620px] rounded-full bg-violet-500/15 blur-3xl"
+        className="absolute bottom-0 right-0 h-155 w-155 rounded-full bg-cyan-800/20 blur-3xl"
         animate={orb2}
         transition={
           reducedMotion
@@ -60,8 +62,8 @@ export default function GalaxyBackground() {
         className="absolute inset-0 opacity-20"
         style={{
           backgroundImage:
-            "linear-gradient(to right, rgba(56,189,248,0.25) 1px, transparent 1px), " +
-            "linear-gradient(to bottom, rgba(139,92,246,0.18) 1px, transparent 1px)",
+            "linear-gradient(to right, rgba(8,145,178,0.20) 1px, transparent 1px), " +
+            "linear-gradient(to bottom, rgba(59,93,138,0.15) 1px, transparent 1px)",
           backgroundSize: "72px 72px",
           transform: "skewY(-8deg) translateY(-10%)",
         }}
